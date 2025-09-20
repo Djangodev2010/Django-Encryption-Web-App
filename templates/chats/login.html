@@ -9,19 +9,19 @@
 </head>
 <body>
     <div class="text-center my-4">
-      <h2 class="fw-bold">Sign In</h2>
-      <p class="text-muted">Please Sign in to continue</p>
+      <h2 class="fw-bold">Log In</h2>
+      <p class="text-muted">Please Log In To Continue</p>
     </div>
    
     <div class="form-control"> 
-    <form method="post" action="{% url 'chats:register' %}">
+    <form method="post" action="{% url 'chats:login' %}">
          {% csrf_token %}
         <div class='form-control'>
             {{form | crispy}}
             <div class="mb-8">
-            <a href="{% url 'chats:login' %}" class="link-underline-opacity-0 link-primary">Already Have An Account? Log In Now!</a>
+            <a href="{% url 'chats:register' %}" class="link-underline-opacity-0 link-primary">Don't Have An Account? Sign Up Now!</a>
             </div>
-            <button class='btn btn-success center' type='submit'>Submit</button>
+            <button class='btn btn-success center' type='submit'>Log in</button>
         </div>
     </form>
     </div>
