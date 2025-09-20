@@ -1,1 +1,28 @@
-<h1>Hello World</h1>
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+{% for chat in chats %}
+<style>
+  .hover-card {
+    transition: all 0.3s ease;
+  }
+
+  .hover-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+  }
+</style>
+
+<a href="{% url 'chats:chat_text' pk=chat.friend.id %}" style="text-decoration: none;">
+  <div class="card mb-4 hover-card" style="width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">{{ chat.friend.username }}</h5>
+    </div>
+  </div>
+</a>
+{% endfor %}
+
+{% endblock content %}

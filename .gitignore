@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 db.sqlite3
+=======
+db.sqlite3
+>>>>>>> 76c32c9 (Added login functionality along with the ability to click on a frined that a user has and view the chats(currently just a static text, i.e. the user has no ability to write the message but can view the chats) and the chats are arranged in order from the earliest from the bottom.)
