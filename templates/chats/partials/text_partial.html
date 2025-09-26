@@ -1,0 +1,19 @@
+{% if chat.sent_by == request.user %}
+    <!-- Sent message -->
+    <div class="d-flex justify-content-end mb-2 overflow-wrap: break-word flex-grow: 1">
+      <div class="bg-primary text-white p-3 rounded-pill" style="max-width: 70%;">
+        <small>{{ chat.text }}</small>
+        <div class="text-white-50 text-end small mt-2">{{ chat.sent_at|date:"H:i" }}</div>
+      </div>
+    </div>
+  {% else %}
+    <!-- Received message -->
+    <div class="container py-3 overflow-wrap: break-word flex-grow: 1">
+      <div class="d-flex mb-2">
+        <div class="bg-light text-dark p-3 rounded-pill" style="max-width: 70%;">
+          <small>{{ chat.text }}</small>
+          <div class="text-muted text-end small mt-2">{{ chat.sent_at|date:"H:i" }}</div>
+        </div>
+      </div>
+    </div>
+  {% endif %}

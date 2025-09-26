@@ -8,43 +8,60 @@
 </head>
 <body>
     
-    <nav class="navbar bg-body-tertiary">
-      <div class="container-fluid">
-        <a href="{% url 'chats:index' %}" class="badge navbar-brand text-nowrap bg-success border fs-3">Chats</a>
-      </div>
-    </nav>
+    <nav class="navbar bg-body-tertiary fixed-top">
+  <div class="container-fluid">
+    <a href="{% url 'chats:index' %}" class="badge navbar-brand text-nowrap bg-success border fs-3">Chats</a>
+  </div>
+</nav>
     
-   <div style="text-align:center; margin-top:20px; margin-bottom:20px;">
+   <div style="text-align:center; margin-top:70px; margin-bottom:20px;">
   <span style="background-color:#f2f2f2; padding:10px 16px; border-radius:20px; display:inline-block;">
     <h1 class="h1 fs-1" style="margin:0;">{{ friend_username }}</h1>
   </span>
 </div>
    
-   {% for chat in chats %}
-
-  {% if chat.sent_by == request.user %}
-  <!-- Sent message -->
-  <div class="d-flex justify-content-end mb-2">
-    <div class="bg-primary text-white p-3 rounded-pill" style="max-width: 70%;">
-      <small>{{chat.text}}</small>
-      <div class="text-white-50 text-end small">07:31 AM</div>
-    </div>
-  </div>
-</div>
-    
-    {% else %}
-    <div class="container py-3">
-  <!-- Received message -->
-  <div class="d-flex mb-2">
-    <div class="bg-light text-dark p-3 rounded-pill" style="max-width: 70%;">
-      <small>{{chat.text}}</small>
-      <div class="text-muted text-end small"></div>
-    </div>
-  </div>
-  {% endif %}
-  
+   <div id="chat-container" style="padding-bottom: 80px;">
+  {% for chat in chats %}
+    {% include 'chats/partials/text_partial.html' %}
   {% endfor %}
+</div>
+
+<form class="fixed-bottom bg-white p-2 border-top mt-2" id="message-form" data-id={{ friend_id }}>
+  {% csrf_token %}
+  <div class="container">
+    <div class="input-group">
+      <input type="text" name="text" class="form-control rounded-pill message-input" id="message-input" placeholder="Type a message..." required>
+      <button class="btn btn-success ms-2 rounded-pill" type="submit">Send</button>
+    </div>
+  </div>
+</form>
     
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $('#message-form').on('submit', function(e) {
+    e.preventDefault();
+    const message = $('#message-input').val();
+    const csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+    const friendId = $('#message-form').data('id');
+
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'chats:send_message' friend_id %}",
+      data: {
+        'text': message,
+        'csrfmiddlewaretoken': csrfToken
+      },
+      success: function(response) {
+        $('#message-input').val('');
+        $('#chat-container').append(response.html);
+        window.scrollTo(0, document.body.scrollHeight);
+      },
+      error: function() {
+        alert('Message failed to send.');
+      }
+    });
+  });
+</script>
 </body>
 </html>

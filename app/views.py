@@ -7,6 +7,8 @@ from django.shortcuts import redirect
 from django.contrib.auth import login, authenticate
 from .models import *
 from django.db.models import Q
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 
 # Create your views here.
 
@@ -20,6 +22,28 @@ class IndexView(View):
         }
         return render(request, 'chats/index.html', context)
 
+class ChatTextView(View):
+    def get(self, request, pk):
+        friend = User.objects.get(pk=pk)
+        chats = TextChat.objects.filter(Q(sent_by=request.user, recieve_by=friend) | Q(sent_by=friend, recieve_by=request.user)).order_by('sent_at')
+        context = {
+            'chats': chats,
+            'friend_username': friend.username,
+            'friend_id': pk
+        }
+        return render(request, 'chats/chat_text.html', context)
+
+class SendMessage(View):
+    def post(self, request, friendId):
+        text = request.POST.get('text')
+        friend = User.objects.get(pk=friendId)
+        chat = TextChat.objects.create(
+            text = text,
+            sent_by = request.user,
+            recieve_by = friend
+        )
+        html = render_to_string('chats/partials/text_partial.html', {'chat': chat, 'request': request})
+        return JsonResponse({'html': html})
 
 # registeration 
 class RegisterView(View):
@@ -65,13 +89,3 @@ class LoginView(View):
                 form.add_error(None, 'Invalid Credentials!')
         return render(request, 'chats/login.html', {'form': form})
 
-class ChatTextView(View):
-    def get(self, request, pk):
-        friend = User.objects.get(pk=pk)
-        chats = TextChat.objects.filter(Q(sent_by=request.user, recieve_by=friend) | Q(sent_by=friend, recieve_by=request.user)).order_by('sent_at')
-        print(chats)
-        context = {
-            'chats': chats,
-            'friend_username': friend.username
-        }
-        return render(request, 'chats/chat_text.html', context)
