@@ -3,5 +3,5 @@ from .models import *
 
 # Register your models here.
 
-admin.site.register(UserChat)
+admin.site.register(UserFriend)
 admin.site.register(TextChat)
