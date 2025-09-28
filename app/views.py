@@ -63,8 +63,12 @@ class RegisterView(View):
     def post(self, request, *args, **kwargs):
         form = RegisterForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('login')
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password1'])
+            user.assign_friend_code()
+            user.save()
+            login_url = reverse('chats:login')
+            return redirect(login_url)
         else:
             context = {
                 'form': form
@@ -98,5 +102,5 @@ class LoginView(View):
 # logout
 def logout_view(request):
     logout(request)
-    home_url = reverse('chats:login')
+    home_url = reverse('chats:index')
     return redirect(home_url)
