@@ -11,7 +11,9 @@ urlpatterns = [
     path('<int:pk>/', ChatTextView.as_view(), name='chat_text'),
     path('send/<int:friendId>', SendMessage.as_view(), name='send_message'),
     path('logout/', views.logout_view, name='logout'),
-    path('friend-request-menu/', FriendRequestMenu.as_view(), name='friend_request_menu')
+    path('friend-request-menu/', FriendRequestMenu.as_view(), name='friend_request_menu'),
+    path('search/', SearchView.as_view(), name='search_friends'),
+    path('friend-request-search/', FriendRequestSearchView.as_view(), name='search_friend_request')
     
     
 ]

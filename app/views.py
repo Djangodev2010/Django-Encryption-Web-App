@@ -6,7 +6,7 @@ from .forms import *
 from django.contrib.auth import login, authenticate
 from .models import *
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.contrib.auth import logout 
 
@@ -16,9 +16,9 @@ from django.contrib.auth import logout
 @method_decorator(login_required, name='dispatch')
 class IndexView(View):
     def get(self, request, *args, **kwargs):
-        chats = UserFriend.objects.filter(user=request.user)
+        friends = UserFriend.objects.filter(user=request.user, is_request=False)
         context = {
-            'chats': chats
+            'chats': friends 
         }
         return render(request, 'chats/index.html', context)
 
@@ -32,6 +32,7 @@ class ChatTextView(View):
             'friend_username': friend.username,
             'friend_id': pk
         }
+        print()
         return render(request, 'chats/chat_text.html', context)
 
 # sends a message 
@@ -46,9 +47,23 @@ class SendMessage(View):
         )
         html = render_to_string('chats/partials/text_partial.html', {'chat': chat, 'request': request})
         return JsonResponse({'html': html})
+        
+class SearchView(View):
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get('query', '')
+        friends = UserFriend.objects.filter(name__icontains=query, user=request.user)
 
+        html =  render_to_string('chats/partials/friend_partials.html', {'chats': friends}, request=request)
+        return HttpResponse(html)
+ 
 class FriendRequestMenu(View):
     def get(self, request, *args, **kwargs):
+        return render(request, 'chats/friend_menu.html')
+
+class FriendRequestSearchView(View):
+    def get(self, request):
+        friend_code = request.GET.get('friend_code', '')
+        print(friend_code)
         return render(request, 'chats/friend_menu.html')
 
 # registeration 

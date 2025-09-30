@@ -1,0 +1,27 @@
+<style>
+  .hover-card {
+    transition: all 0.3s ease;
+  }
+
+  .hover-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+  }
+</style>
+
+<div id="friend_chat">
+  <div class="row">
+    {% for chat in chats %}
+      <div class="col-md-4 mb-3">
+        <a href="{% url 'chats:chat_text' pk=chat.friend.id %}" style="text-decoration: none;">
+          <div class="card mb-4 hover-card" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">{{ chat.name }}</h5>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>

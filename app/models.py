@@ -47,6 +47,13 @@ class TextChat(models.Model):
 class UserFriend(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='friendships')
     friend = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='added_by')
+    name = models.CharField(max_length=500)
+    is_request = models.BooleanField(default=True)
+    
+    def set_username(self):
+        if not self.name:
+            self.name = self.friend.username
+            return self.name
     
     def __str__(self):
-        return 'USER: ' + self.user.username + ' FRIEND: ' + self.friend.username
+        return "User: " + self.user.username + " Friend: " + self.name

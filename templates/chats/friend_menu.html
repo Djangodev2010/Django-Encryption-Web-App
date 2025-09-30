@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-3">Find Friends</h2>
+
+    <!-- Search Bar -->
+    <form class="d-flex ms-auto me-3 my-2 my-lg-0">
+  <input class="form-control me-2" name="friend_code" type="search" placeholder="Type A Friend Code To Connect!" aria-label="Search" hx-get="{% url 'chats:search_friend_request' %}" hx-target="#friend_request" hx-trigger="keyup changed delay:300ms" hx-swap="innerHTML" />
+</form>
+
+    <!-- Search Results -->
+    {% if search_results %}
+        <h5>Search Results:</h5>
+        <ul class="list-group mb-4">
+            {% for user in search_results %}
+                <li class="list-group-item d-flex justify-content-between align-items-center" id="friend_request">
+                    {{ user.username }}
+                    <form method="POST" action="#">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-success">Send Request</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% elif query %}
+        <p>No users found matching "{{ query }}".</p>
+    {% endif %}
+
+    <!-- Friend Requests -->
+    <h5>Incoming Friend Requests:</h5>
+    {% if friend_requests %}
+        <ul class="list-group">
+            {% for request in friend_requests %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ request.sent_by.username }}
+                    <div>
+                        <form method="POST" action="#" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-primary">Accept</button>
+                        </form>
+                        <form method="POST" action="#" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger">Decline</button>
+                        </form>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted">You don't have any friend requests.</p>
+    {% endif %}
+</div>
+{% endblock %}

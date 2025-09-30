@@ -3,27 +3,10 @@
 
 {% block content %}
 
-{% for chat in chats %}
-<style>
-  .hover-card {
-    transition: all 0.3s ease;
-  }
+<div id="friend_chat">
+    {% include 'chats/partials/friend_partials.html' %}
+</div>
 
-  .hover-card:hover {
-    transform: scale(1.03);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    cursor: pointer;
-  }
-</style>
-
-<a href="{% url 'chats:chat_text' pk=chat.friend.id %}" style="text-decoration: none;">
-  <div class="card mb-4 hover-card" style="width: 18rem;">
-    <div class="card-body">
-      <h5 class="card-title">{{ chat.friend.username }}</h5>
-    </div>
-  </div>
-</a>
-{% endfor %}
 <!-- Floating Add Friend Button -->
 <a href="{% url 'chats:friend_request_menu' %}" class="btn btn-success rounded-circle"
    style="position: fixed; bottom: 40px; right: 30px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 24px; z-index: 1000;">
