@@ -1,4 +1,4 @@
-from django.shortcuts import render, reverse, redirect
+from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.views.generic import View
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -56,15 +56,29 @@ class SearchView(View):
         html =  render_to_string('chats/partials/friend_partials.html', {'chats': friends}, request=request)
         return HttpResponse(html)
  
-class FriendRequestMenu(View):
+class FriendRequestMenuView(View):
     def get(self, request, *args, **kwargs):
-        return render(request, 'chats/friend_menu.html')
+        friend_requests = UserFriend.objects.filter(user=request.user, is_request=True).order_by('-created_at')
+        context = {
+            'pending_requests': friend_requests
+        }
+        return render(request, 'chats/friend_menu.html', context)
 
 class FriendRequestSearchView(View):
     def get(self, request):
         friend_code = request.GET.get('friend_code', '')
-        print(friend_code)
-        return render(request, 'chats/friend_menu.html')
+        pass
+
+class AcceptFriendRequestView(View):
+    def post(self, request, pk):
+        friend_request = get_object_or_404(UserFriend, pk=pk)
+        friend_request.is_request = False
+        friend_request.save()
+        pending_requests = UserFriend.objects.filter(user=request.user, is_request=True)
+        context = {
+            'pending_requests': pending_requests
+        }
+        return render(request, 'chats/partials/pending_requests_partials.html', context)
 
 # registeration 
 class RegisterView(View):
