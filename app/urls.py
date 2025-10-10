@@ -14,7 +14,8 @@ urlpatterns = [
     path('friend-request-menu/', FriendRequestMenuView.as_view(), name='friend_request_menu'),
     path('search/', SearchView.as_view(), name='search_friends'),
     path('friend-request-search/', FriendRequestSearchView.as_view(), name='search_friend_request'),
-    path('accept-friend-request/<int:pk>/', AcceptFriendRequestView.as_view(), name='accept_friend_request')
+    path('accept-friend-request/<int:pk>/', AcceptFriendRequestView.as_view(), name='accept_friend_request'),
+    #path('send-friend_request/<int:pk>', SendFriendRequestView.as_view(), name='send_friend_request'),
     
     
 ]

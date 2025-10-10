@@ -67,7 +67,11 @@ class FriendRequestMenuView(View):
 class FriendRequestSearchView(View):
     def get(self, request):
         friend_code = request.GET.get('friend_code', '')
-        pass
+        searched_user = get_object_or_404(User, friend_code=friend_code)
+        context = {
+            'searched_user': searched_user
+        }
+        return render(request, 'chats/partials/friend_request_search_partials.html', context)
 
 class AcceptFriendRequestView(View):
     def post(self, request, pk):
