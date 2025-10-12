@@ -6,7 +6,7 @@ from .forms import *
 from django.contrib.auth import login, authenticate
 from .models import *
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse 
 from django.template.loader import render_to_string
 from django.contrib.auth import logout 
 
@@ -16,7 +16,7 @@ from django.contrib.auth import logout
 @method_decorator(login_required, name='dispatch')
 class IndexView(View):
     def get(self, request, *args, **kwargs):
-        friends = UserFriend.objects.filter(user=request.user, is_request=False)
+        friends = UserFriend.objects.filter(Q(user=request.user) | Q(friend=request.user), is_request=False).exclude(name=request.user.username)
         context = {
             'chats': friends 
         }
@@ -51,7 +51,7 @@ class SendMessage(View):
 class SearchView(View):
     def get(self, request, *args, **kwargs):
         query = request.GET.get('query', '')
-        friends = UserFriend.objects.filter(name__icontains=query, user=request.user)
+        friends = UserFriend.objects.filter(name__icontains=query, user=request.user, is_request=False)
 
         html =  render_to_string('chats/partials/friend_partials.html', {'chats': friends}, request=request)
         return HttpResponse(html)
