@@ -6,15 +6,18 @@
   <h2 class="mb-3">Find Friends</h2>
 
   <!-- Search Form with HTMX -->
-      <form>
-        <input type="search" class="form-control" name="friend_code" placeholder="Type A Friend Code To Connect!" aria-label="Search" />
-        <button class="btn btn-success" type="button"
-                hx-get="{% url 'chats:search_friend_request' %}"
-                hx-target="#friend_request"
-                hx-include="[name='friend_code']"
-                hx-swap="innerHTML">
-          Search
-        </button>
+      <form method="GET">
+        <input
+            type="search" 
+            class="form-control"                                       name="friend_code" 
+            placeholder="Type A Friend Code To Connect!" 
+            aria-label="Search" 
+            hx-get="{% url 'chats:search_friend_request' %}"
+            hx-target="#friend_request"
+            hx-include="[name='friend_code']"
+            hx-swap="innerHTML" 
+            hx-trigger="keyup changed delay:300ms"
+        />
       </form>
       
   <!-- Friend Request Search Results -->

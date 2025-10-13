@@ -68,8 +68,12 @@ class FriendRequestSearchView(View):
     def get(self, request):
         friend_code = request.GET.get('friend_code', '')
         searched_user = get_object_or_404(User, friend_code=friend_code)
+        already_friend = False
+        if UserFriend.objects.filter(Q(user=request.user, friend=searched_user) | Q(user=searched_user, friend=request.user)).exists():
+            already_friend = True
         context = {
-            'searched_user': searched_user
+            'searched_user': searched_user,
+            'already_friend': already_friend
         }
         return render(request, 'chats/partials/friend_request_search_partials.html', context)
 
@@ -83,6 +87,17 @@ class AcceptFriendRequestView(View):
             'pending_requests': pending_requests
         }
         return render(request, 'chats/partials/pending_requests_partials.html', context)
+
+class SendFriendRequestView(View):
+    def post(self, request, pk):
+        searched_user = get_object_or_404(User, pk=pk)
+        new_request = UserFriend.objects.create(user=searched_user, friend=request.user, name=request.user.username)
+        already_friend = True 
+        context = {
+            'searched_user': searched_user,
+            'already_friend': already_friend
+        }
+        return render(request, 'chats/partials/friend_request_search_partials.html', context)
 
 # registeration 
 class RegisterView(View):
